@@ -5,18 +5,28 @@ import { StoresRepository } from './Stores.repository';
 export class StoresService {
 	constructor(private repository: StoresRepository) {}
 
-	async getStores(params: { page: number; perPage: number }) {
-		const { page, perPage } = params; //TODO: Add check id = null
+	async getStores(params: {
+		page: number;
+		perPage: number;
+		onlyOpened: boolean;
+	}) {
+		const { page, perPage, onlyOpened } = params;
+		const where = {
+			...(onlyOpened && { is_open: true }), //if onlyOpened add requirement to filter by is_open = true
+		};
+
 		const Stores = await this.repository.getStores({
 			skip: page * perPage,
 			take: perPage,
 			orderBy: {
 				id: 'asc',
 			},
+			where,
 		});
 		return Stores;
 	}
 
+	// REMOVE?
 	async getOpenStores() {
 		const Stores = await this.repository.getStores({
 			orderBy: {
@@ -29,6 +39,7 @@ export class StoresService {
 		return Stores;
 	}
 
+	// REMOVE?
 	async getStoreById(params: { id: number }) {
 		const { id } = params; //TODO: Add check id = null
 		const Stores = await this.repository.getStores({

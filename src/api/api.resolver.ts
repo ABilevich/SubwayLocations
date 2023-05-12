@@ -20,13 +20,22 @@ export class ApiResolver {
 	async getStores(
 		@Args('page', { type: () => Int }) page: number,
 		@Args('perPage', { type: () => Int }) perPage: number,
+		@Args('onlyOpened', { type: () => Boolean, defaultValue: false })
+		onlyOpened: boolean,
 	) {
-		return this.storesService.getStores({ page, perPage });
+		return this.storesService.getStores({ page, perPage, onlyOpened });
 	}
 
 	@Query(() => [Store])
-	async getOpenStores() {
-		return this.storesService.getOpenStores();
+	async getOpenStores(
+		@Args('page', { type: () => Int }) page: number,
+		@Args('perPage', { type: () => Int }) perPage: number,
+	) {
+		return this.storesService.getStores({
+			page,
+			perPage,
+			onlyOpened: true,
+		});
 	}
 
 	@Query(() => Store)

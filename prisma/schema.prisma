@@ -19,14 +19,29 @@ model State {
 
 model Store {
   id             Int                                   @id @default(autoincrement())
+  name           String
   street_address String                                @unique
+  city           String
   state          State                                 @relation(fields: [state_id], references: [id])
   state_id       Int
-  city           String
+  zip_code       String
   country        String
-  geo_coords     Unsupported("geometry(Point, 4326)")?
+  phone_number_1 String
+  phone_number_2 String
+  fax_1          String
+  fax_2          String
+  email_1        String
+  email_2        String
+  website        String
+  open_hours     String
   latitude       String
   longitude      String
+  geo_coords     Unsupported("geometry(Point, 4326)")?
+  facebook       String
+  twitter        String
+  instagram      String
+  pinterest      String
+  youtube        String
   is_open        Boolean                               @default(true)
 
   // the index for that column

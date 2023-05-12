@@ -29,18 +29,11 @@ export class StoresRepository {
 		lon: string;
 	}): Promise<Store> {
 		const { lat, lon } = params;
-		console.log({ lat, lon });
 		const point = `POINT(${lat} ${lon})`;
 		const result = await this.prisma.$queryRaw<Store[]>(
 			Prisma.sql`
 			SELECT 
-				"id",
-				"street_address",
-				"city",
-				"country",
-				"latitude",
-				"longitude",
-				"is_open"
+				"id"
 			FROM 
 				"Store" s 
 			ORDER BY 

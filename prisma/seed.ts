@@ -59,7 +59,7 @@ async function main() {
 	for (const subway of csvStores) {
 		console.log(subway.street_address);
 		try {
-			const newStore = await prisma.store.upsert({
+			await prisma.store.upsert({
 				where: {
 					street_address: subway.street_address,
 				},
@@ -82,9 +82,6 @@ async function main() {
 			console.error('Failed to insert store:');
 			console.error(error);
 		}
-
-		// const geomFromText = `POINT(${subway.longitude} ${subway.latitude})`;
-		// await prisma.$executeRaw`UPDATE "Store" SET coords = ST_GeomFromText(${geomFromText}) WHERE id = ${newStore.id}`;
 	}
 
 	await prisma.$executeRaw`UPDATE "Store" SET geo_coords = ST_SetSRID(ST_MakePoint(longitude::double precision, latitude::double precision)::geometry, 4326);`;

@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgis/postgis
+    container_name: ${PG_CONTAINER_NAME}
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./utils/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      # - ./utils/docker-init.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - "5433:5432"
+
+volumes:
+   pg_data:

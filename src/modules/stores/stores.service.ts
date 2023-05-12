@@ -5,8 +5,11 @@ import { StoresRepository } from './Stores.repository';
 export class StoresService {
 	constructor(private repository: StoresRepository) {}
 
-	async getStores() {
+	async getStores(params: { page: number; perPage: number }) {
+		const { page, perPage } = params; //TODO: Add check id = null
 		const Stores = await this.repository.getStores({
+			skip: page * perPage,
+			take: perPage,
 			orderBy: {
 				id: 'asc',
 			},
@@ -34,6 +37,15 @@ export class StoresService {
 			},
 		});
 		return Stores[0]; //TODO: Add check Stores.length = 0
+	}
+
+	async findClosestStoreToLocation(params: { lat: string; lon: string }) {
+		const { lat, lon } = params; //TODO: Add check id = null
+		const Store = await this.repository.findClosestStoreToLocation({
+			lat,
+			lon,
+		});
+		return Store;
 	}
 
 	async closeStoreById(params: { id: number }) {

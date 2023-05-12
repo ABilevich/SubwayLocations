@@ -24,6 +24,40 @@ export class StoresRepository {
 		});
 	}
 
+	async findClosestStoreToLocation(params: {
+		lat: string;
+		lon: string;
+	}): Promise<Store> {
+		const { lat, lon } = params;
+		console.log({ lat, lon });
+		const point = `POINT(${lat} ${lon})`;
+		const result = await this.prisma.$queryRaw<Store[]>(
+			Prisma.sql`
+			SELECT 
+				"id",
+				"street_address",
+				"city",
+				"country",
+				"latitude",
+				"longitude",
+				"is_open"
+			FROM 
+				"Store" s 
+			ORDER BY 
+				geo_coords <-> ST_GeomFromText (${point}, 4326) 
+			LIMIT 
+				1;`,
+		);
+		console.log('result: ' + JSON.stringify(result[0]));
+		const id = result[0].id;
+		const Stores = await this.getStores({
+			where: {
+				id,
+			},
+		});
+		return Stores[0];
+	}
+
 	async updateStore(params: {
 		where: Prisma.StoreWhereUniqueInput;
 		data: Prisma.StoreUpdateInput;

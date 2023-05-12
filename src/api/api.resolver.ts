@@ -17,8 +17,11 @@ export class ApiResolver {
 	}
 
 	@Query(() => [Store])
-	async getStores() {
-		return this.storesService.getStores();
+	async getStores(
+		@Args('page', { type: () => Int }) page: number,
+		@Args('perPage', { type: () => Int }) perPage: number,
+	) {
+		return this.storesService.getStores({ page, perPage });
 	}
 
 	@Query(() => [Store])
@@ -29,6 +32,14 @@ export class ApiResolver {
 	@Query(() => Store)
 	async getStoreById(@Args('id', { type: () => Int }) id: number) {
 		return this.storesService.getStoreById({ id });
+	}
+
+	@Query(() => Store)
+	async findClosestStoreToLocation(
+		@Args('lat') lat: string,
+		@Args('lon') lon: string,
+	) {
+		return this.storesService.findClosestStoreToLocation({ lat, lon });
 	}
 
 	@Mutation(() => Store)

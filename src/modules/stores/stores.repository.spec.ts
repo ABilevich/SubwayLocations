@@ -60,29 +60,8 @@ describe(`StoresRepository`, () => {
 					},
 				});
 
-			console.log(getStores);
-
 			// Assert
 			await expect(getStores()).resolves.toBe(mockedStores);
 		});
-		// it(`should not be over 80 characters`, async () => {
-		// 	// Arrange
-		// 	const payload = {
-		// 		name: `New Store`,
-		// 		abbreviation: 'NEW',
-		// 	};
-
-		// 	// Act
-		// 	const createStore = () =>
-		// 		storesRepository.createStore({
-		// 			data: {
-		// 				name: payload.name,
-		// 				abbreviation: payload.abbreviation,
-		// 			},
-		// 		});
-
-		// 	// Assert
-		// 	await expect(createStore()).rejects.toBeInstanceOf(Error);
-		// });
 	});
 });

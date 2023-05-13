@@ -29,7 +29,7 @@ export class StoresRepository {
 		lon: number;
 	}): Promise<Store> {
 		const { lat, lon } = params;
-		const point = `POINT(${lat} ${lon})`;
+		const point = `POINT(${lon} ${lat})`;
 		const result = await this.prisma.$queryRaw<Store[]>(
 			Prisma.sql`
 			SELECT 
@@ -41,6 +41,18 @@ export class StoresRepository {
 			LIMIT 
 				1;`,
 		);
+
+		// const result = await this.prisma.$queryRaw<Store[]>(
+		// 	Prisma.sql`
+		// 	SELECT
+		// 		"id"
+		// 	FROM
+		// 		"Store" s
+		// 	ORDER BY
+		// 		geo_coords <-> ST_GeomFromText (${point}, 4326)
+		// 	LIMIT
+		// 		1;`,
+		// );
 
 		// console.log('result: ' + JSON.stringify(result[0])); TODO: Remove
 

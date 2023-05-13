@@ -1,24 +1,186 @@
-# SubwayLocations
+# Subway Store Locations
 
-## Project stack:
+This project contains a **Nest.js** backend that exposes a **GraphQL** API with various methods for querying a database that contains a list of subway store locations, and US states. The database queries are accomplished by using the **Prisma** module.
 
--   Nest.js
--   GraphQL
--   Prisma
+## Project Structure
 
-## For running the project
+The most important files for the comprehension of the project flow are explained below
 
+**/src/api/api.resolver.ts**
+-> Contains the **GraphQL** endpoints and calls the stores.service.
+
+**/src/modules.stores/stores.service.ts**
+-> Contains the main service methods that execute the business logic and calls the stores.repository.ts
+
+**/src/modules.stores/stores.repository.ts**
+-> Contains the logic necessary for accessing the database using a series of parameters to provide pagination and filtering options. This uses the **Prisma** module.
+
+## Running the project
+
+The project can be run by following these commands:
+
+1. First install the necessary npm packages:
+
+```
+> npm install
+```
+
+2. Then create the docker container that hosts the database (Make sure to have docker running)
+
+```
 > docker compose up -d
+```
+
+3. Then run the migrations to create tha tables
+
+```
 > npx prisma migrate dev
+```
+
+4. The run the seeds to populate the database using the data from the .csv files.
+
+```
 > npm run seed
+```
 
-## For running the tests
+After this step the project can be run by excecuting:
 
+```
+> npm run start:dev
+```
+
+## Running unit and integration tests
+
+The project contains a suit of both unit and integration tests that can be run by excecuting the command:
+
+```
 > npm test
+```
 
-## Graphql testing:
+The **unit** tests are mainly aimed at testing the **stores.service** and the **stores.repository** methods by mocking the **store.repository** and the **prisma.service** methods respectively.
 
-First open the graphql palyground: http://localhost:3000/graphql
+On the other hand, the **integration** tests, assert the correct execution of the **store** and **stores** endpoints from start to finish by calling the GraphQL endpoints and verifying the return.
 
-Available functions:
-getStores(page: number , perPage: number)
+## Testing the endpoints on the GraphQL
+
+After the project starts, a GraphQL playground can be accessed by following the link: http://localhost:3000/graphql. Here, a variety of endpoints can be tested.
+
+### stores()
+
+The stores endpoint provides access to a paginated list of stores. The parameters can be customized as follows:
+
+-   page (Int): The page number.
+-   perPage (Int): The number of elements in each page.
+-   onlyOpened (Boolean, optional): If true, only opened stores will be returned.
+
+Below is an example of execution:
+(Keep in mind in every endpoint the list of attributes can be customized, this is just an example)
+
+```graphql
+query {
+	stores(page: 0, perPage: 10, onlyOpened: true) {
+		id
+		name
+		street_address
+		city
+		state {
+			name
+			abbreviation
+		}
+		zip_code
+		country
+		latitude
+		longitude
+		is_open
+	}
+}
+```
+
+### store()
+
+The store endpoint returns a single store that matches the provided id. The only parameter can be customized as follows:
+
+-   id (Int): the id of the store.
+
+Below is an example of execution:
+
+```graphql
+query {
+	store(id: 1) {
+		id
+		name
+		street_address
+		city
+		state {
+			name
+			abbreviation
+		}
+		zip_code
+		country
+		latitude
+		longitude
+		is_open
+	}
+}
+```
+
+### findClosestStoreToLocation()
+
+This endpoint finds the closest store to the provided latitude and longitude values. The parameters can be customized as follows:
+
+-   lat (Float): The latitude value
+-   lon (Float): The longitude value
+
+Below is an example of execution:
+
+```graphql
+query {
+	findClosestStoreToLocation(lat: 25.808958, lon: -80.196953) {
+		id
+		name
+		street_address
+		city
+		state {
+			name
+			abbreviation
+		}
+		zip_code
+		country
+		latitude
+		longitude
+		is_open
+	}
+}
+```
+
+## closeStoreById()
+
+This enpoint "closes" a store by chaning the is_open attribute to **false**, this prevents it from appearing in the stores list if the onlyOpened paramiter is set to true. The only parameter can be sutomized as follows:
+
+-   id (Int): the id of the store.
+
+```graphql
+mutation {
+	closeStoreById(id: 1) {
+		id
+		is_open
+		street_address
+	}
+}
+```
+
+## openStoreById()
+
+This endpoint "opens" a store by changing the is_open attribute to **true**, this allows it to appear in the stores list if the onlyOpened parameter is set to **false** or not provided. The only parameter can be customized as follows:
+
+-   id (Int): the id of the store.
+
+```graphql
+mutation {
+	openStoreById(id: 1) {
+		id
+		is_open
+		street_address
+	}
+}
+```

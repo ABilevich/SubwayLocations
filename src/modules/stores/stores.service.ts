@@ -6,6 +6,29 @@ import {
 } from '@nestjs/common';
 import { StoresRepository } from './Stores.repository';
 
+interface GetStoresParams {
+	page: number; // Page number (page >= 0)
+	perPage: number; // Elements per page (perPage > 0)
+	onlyOpened: boolean; //Boolean to only ask for opened stores
+}
+
+interface GetStoreByIdParams {
+	id: number;
+}
+
+interface FindClosestStoreToLocationParams {
+	lat: number;
+	lon: number;
+}
+
+interface CloseStoreByIdParams {
+	id: number;
+}
+
+interface OpenStoreByIdParams {
+	id: number;
+}
+
 @Injectable()
 export class StoresService {
 	constructor(private repository: StoresRepository) {}
@@ -13,11 +36,7 @@ export class StoresService {
 	// ------------------------  GET STORES -----------------------------
 
 	// Returns an array of Stores paginated
-	async getStores(params: {
-		page: number; // Page number (page >= 0)
-		perPage: number; // Elements per page (perPage > 0)
-		onlyOpened: boolean; //Boolean to only ask for opened stores
-	}) {
+	async getStores(params: GetStoresParams) {
 		const { page, perPage, onlyOpened } = params;
 
 		if (page == null || page < 0 || perPage == null || perPage <= 0) {
@@ -46,7 +65,7 @@ export class StoresService {
 	// --------------------------  GET STORE -------------------------------
 
 	// Returns a single store that matches the given ID
-	async getStoreById(params: { id: number }) {
+	async getStoreById(params: GetStoreByIdParams) {
 		const { id } = params;
 
 		if (id == null || id <= 0) {
@@ -71,7 +90,7 @@ export class StoresService {
 	// -------------- FIND CLOSEST STORE TO LOCATION -----------------------
 
 	// Given the lat and lon values, returns the closest store to the location
-	async findClosestStoreToLocation(params: { lat: number; lon: number }) {
+	async findClosestStoreToLocation(params: FindClosestStoreToLocationParams) {
 		const { lat, lon } = params;
 
 		if (!lat || !lon) {
@@ -93,7 +112,7 @@ export class StoresService {
 	// The close and open store methods where separated to follow SRP in case further logic needs to be added (Eg: Sending an email notification or check permissions)
 
 	// Closes the given store by id
-	async closeStoreById(params: { id: number }) {
+	async closeStoreById(params: CloseStoreByIdParams) {
 		const { id } = params;
 
 		if (id == null || id <= 0) {
@@ -127,7 +146,7 @@ export class StoresService {
 	}
 
 	// Opens the given store by id
-	async openStoreById(params: { id: number }) {
+	async openStoreById(params: OpenStoreByIdParams) {
 		const { id } = params;
 
 		if (id == null || id <= 0) {

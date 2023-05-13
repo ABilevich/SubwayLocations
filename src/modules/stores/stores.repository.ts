@@ -42,20 +42,6 @@ export class StoresRepository {
 				1;`,
 		);
 
-		// const result = await this.prisma.$queryRaw<Store[]>(
-		// 	Prisma.sql`
-		// 	SELECT
-		// 		"id"
-		// 	FROM
-		// 		"Store" s
-		// 	ORDER BY
-		// 		geo_coords <-> ST_GeomFromText (${point}, 4326)
-		// 	LIMIT
-		// 		1;`,
-		// );
-
-		// console.log('result: ' + JSON.stringify(result[0])); TODO: Remove
-
 		const id = result[0].id;
 		const Stores = await this.getStores({
 			where: {

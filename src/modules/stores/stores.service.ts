@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { StoresRepository } from './Stores.repository';
 
+// Interfaces for the parameter types of each function.
 interface GetStoresParams {
 	page: number; // Page number (page >= 0)
 	perPage: number; // Elements per page (perPage > 0)
@@ -110,6 +111,7 @@ export class StoresService {
 	// -------------------- OPEN AND CLOSE STORE --------------------------
 
 	// The close and open store methods where separated to follow SRP in case further logic needs to be added (Eg: Sending an email notification or check permissions)
+	// But I understand the same functionality could be achieved with only one method.
 
 	// Closes the given store by id
 	async closeStoreById(params: CloseStoreByIdParams) {
@@ -133,7 +135,7 @@ export class StoresService {
 
 			return store;
 		} catch (err) {
-			console.error(err); // Print error for debugging
+			console.error(err);
 			if (err.code == 'P2025') {
 				// If record was not found
 				throw new NotFoundException(`Store with id ${id} not found.`);
@@ -167,7 +169,7 @@ export class StoresService {
 
 			return store;
 		} catch (err) {
-			console.error(err); // Print error for debugging
+			console.error(err);
 			if (err.code == 'P2025') {
 				// If record was not found
 				throw new NotFoundException(`Store with id ${id} not found.`);

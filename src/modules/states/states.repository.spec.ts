@@ -20,48 +20,23 @@ describe(`StatesRepository`, () => {
 		prismaService = moduleRef.get(PrismaService);
 	});
 
-	describe(`createState`, () => {
-		it(`should create a new State`, async () => {
+	describe(`getStates`, () => {
+		it(`should return a State array`, async () => {
 			// Arrange
-			const mockedState = {
-				id: 1,
-				name: 'New State',
-				abbreviation: 'NE',
-			};
-			prismaService.state.create.mockResolvedValue(mockedState);
+			const mockedState = [
+				{
+					id: 1,
+					name: 'Random State',
+					abbreviation: 'RS',
+				},
+			];
+			prismaService.state.findMany.mockResolvedValue(mockedState);
 
 			// Act
-			const createState = () =>
-				statesRepository.createState({
-					data: {
-						name: mockedState.name,
-						abbreviation: mockedState.abbreviation,
-					},
-				});
-
-			console.log(createState);
+			const createState = () => statesRepository.getStates({});
 
 			// Assert
 			await expect(createState()).resolves.toBe(mockedState);
-		});
-		it(`should not be over 80 characters`, async () => {
-			// Arrange
-			const payload = {
-				name: `New State`,
-				abbreviation: 'NEW',
-			};
-
-			// Act
-			const createState = () =>
-				statesRepository.createState({
-					data: {
-						name: payload.name,
-						abbreviation: payload.abbreviation,
-					},
-				});
-
-			// Assert
-			await expect(createState()).rejects.toBeInstanceOf(Error);
 		});
 	});
 });

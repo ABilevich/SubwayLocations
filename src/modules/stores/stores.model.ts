@@ -75,7 +75,4 @@ export class Store {
 
 	@Field(() => Boolean)
 	is_open: StoreDB[`is_open`];
-
-	// @Field(() => Boolean)
-	// geo_coords: StoreDB[`geo_coords`];
 }

@@ -25,8 +25,8 @@ export class StoresRepository {
 	}
 
 	async findClosestStoreToLocation(params: {
-		lat: string;
-		lon: string;
+		lat: number;
+		lon: number;
 	}): Promise<Store> {
 		const { lat, lon } = params;
 		const point = `POINT(${lat} ${lon})`;
@@ -41,13 +41,16 @@ export class StoresRepository {
 			LIMIT 
 				1;`,
 		);
-		console.log('result: ' + JSON.stringify(result[0]));
+
+		// console.log('result: ' + JSON.stringify(result[0])); TODO: Remove
+
 		const id = result[0].id;
 		const Stores = await this.getStores({
 			where: {
 				id,
 			},
 		});
+
 		return Stores[0];
 	}
 

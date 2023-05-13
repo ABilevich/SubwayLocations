@@ -78,7 +78,8 @@ async function main() {
 	// const csvStores = await parseCSV<Store>('./data/subway_short.csv');
 
 	// For each one, do a prisma upsert to insert them if they are not already there
-	for (const subway of csvStores) {
+	const totalStores = csvStores.length;
+	for (const [i, subway] of csvStores.entries()) {
 		try {
 			await prisma.store.upsert({
 				where: {
@@ -114,6 +115,7 @@ async function main() {
 					is_open: true,
 				},
 			});
+			if (i % 1000 == 0) console.log(`${i}/${totalStores} rows added`);
 		} catch (error) {
 			console.error('Failed to insert store:');
 			console.error(error);
@@ -122,6 +124,7 @@ async function main() {
 
 	// After creation update the geo_coords with the geometry point calculated from the latitude and longitude.
 	await prisma.$executeRaw`UPDATE "Store" SET geo_coords = ST_SetSRID(ST_MakePoint(longitude::double precision, latitude::double precision)::geometry, 4326);`;
+	console.log(`${totalStores}/${totalStores} rows added, Done!`);
 }
 main()
 	.then(async () => {

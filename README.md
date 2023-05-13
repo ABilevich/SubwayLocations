@@ -2,6 +2,20 @@
 
 This project contains a **Nest.js** backend that exposes a **GraphQL** API with various methods for querying a database that contains a list of subway store locations, and US states. The database queries are accomplished by using the **Prisma** module.
 
+## Prerequisites
+
+-   having docker installed, to verify run:
+
+```
+> docker ps
+```
+
+-   having node installed installed, to verify run:
+
+```
+> node --version
+```
+
 ## Project Structure
 
 The most important files for the comprehension of the project flow are explained below
@@ -61,7 +75,7 @@ The **unit** tests are mainly aimed at testing the **stores.service** and the **
 
 On the other hand, the **integration** tests, assert the correct execution of the **store** and **stores** endpoints from start to finish by calling the GraphQL endpoints and verifying the return.
 
-## Testing the endpoints on the GraphQL
+## Testing the endpoints on the GraphQL playground
 
 After the project starts, a GraphQL playground can be accessed by following the link: http://localhost:3000/graphql. Here, a variety of endpoints can be tested.
 

@@ -42,7 +42,7 @@ export class StoresRepository {
 				1;`,
 		);
 
-		const id = result[0].id;
+		const id = result[0].id; //TODO Check
 		const Stores = await this.getStores({
 			where: {
 				id,

@@ -7,13 +7,13 @@ This project contains a **Nest.js** backend that exposes a **GraphQL** API with 
 -   having docker installed, to verify run:
 
 ```
-> docker ps
+docker ps
 ```
 
 -   having node installed installed, to verify run:
 
 ```
-> node --version
+node --version
 ```
 
 ## Project Structure
@@ -21,7 +21,7 @@ This project contains a **Nest.js** backend that exposes a **GraphQL** API with 
 The most important files for the comprehension of the project flow are explained below
 
 **/src/api/api.resolver.ts**
--> Contains the **GraphQL** endpoints and calls the stores.service.
+-> Contains the **GraphQL** endpoint definitions and each method calls the stores.service.
 
 **/src/modules.stores/stores.service.ts**
 -> Contains the main service methods that execute the business logic and calls the stores.repository.ts
@@ -36,42 +36,48 @@ The project can be run by following these commands:
 1. First install the necessary npm packages:
 
 ```
-> npm install
+npm install
 ```
 
-2. Then create the docker container that hosts the database (Make sure to have docker running)
+2. Then create the Docker container that hosts the database (Make sure to have docker running)
 
 ```
-> docker compose up -d
+docker compose up -d
 ```
 
 3. Then run the migrations to create tha tables
 
 ```
-> npx prisma migrate dev
+npx prisma migrate dev
 ```
 
 4. The run the seeds to populate the database using the data from the .csv files.
 
 ```
-> npm run seed
+npm run seed
 ```
 
-After this step the project can be run by excecuting:
+After this step the project can be run by executing:
 
 ```
-> npm run start:dev
+npm run start:dev
+```
+
+Additionally, the database can be inspected using Prisma's web interface by executing: (Cans be seen in http://localhost:5555)
+
+```
+npx prisma studio
 ```
 
 ## Running unit and integration tests
 
-The project contains a suit of both unit and integration tests that can be run by excecuting the command:
+The project contains a suit of both unit and integration tests that can be run by executing the command:
 
 ```
-> npm test
+npm test
 ```
 
-The **unit** tests are mainly aimed at testing the **stores.service** and the **stores.repository** methods by mocking the **store.repository** and the **prisma.service** methods respectively.
+The **unit** tests are mainly aimed at testing the **stores.service** and the **stores.repository** methods by mocking the methods from **store.repository** and **prisma.service** respectively.
 
 On the other hand, the **integration** tests, assert the correct execution of the **store** and **stores** endpoints from start to finish by calling the GraphQL endpoints and verifying the return.
 
@@ -173,6 +179,8 @@ This enpoint "closes" a store by chaning the is_open attribute to **false**, thi
 
 -   id (Int): the id of the store.
 
+Below is an example of execution:
+
 ```graphql
 mutation {
 	closeStoreById(id: 1) {
@@ -189,12 +197,29 @@ This endpoint "opens" a store by changing the is_open attribute to **true**, thi
 
 -   id (Int): the id of the store.
 
+Below is an example of execution:
+
 ```graphql
 mutation {
 	openStoreById(id: 1) {
 		id
 		is_open
 		street_address
+	}
+}
+```
+
+## states
+
+There is an additional realy simple endpoint just for querying the entire list of states just in case. It has no parameters.
+
+Below is an example of execution:
+
+```graphql
+query {
+	states {
+		name
+		abbreviation
 	}
 }
 ```

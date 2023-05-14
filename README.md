@@ -4,13 +4,13 @@ This project contains a **Nest.js** backend that exposes a **GraphQL** API with 
 
 ## Prerequisites
 
--   having docker installed, to verify run:
+-   having Docker installed, to verify run:
 
 ```
 docker ps
 ```
 
--   having node installed installed, to verify run:
+-   having Node.js installed installed, to verify run:
 
 ```
 node --version

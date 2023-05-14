@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Store } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -42,10 +42,11 @@ export class StoresRepository {
 				1;`,
 		);
 
-		const id = result[0].id; //TODO Check
+		if (!result || !result[0])
+			throw new NotFoundException(`No store was found.`);
 		const Stores = await this.getStores({
 			where: {
-				id,
+				id: result[0].id,
 			},
 		});
 

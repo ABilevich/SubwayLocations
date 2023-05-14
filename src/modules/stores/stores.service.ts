@@ -5,6 +5,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { StoresRepository } from './Stores.repository';
+import { Store } from './stores.model';
 
 // Interfaces for the parameter types of each function.
 interface GetStoresParams {
@@ -14,24 +15,22 @@ interface GetStoresParams {
 }
 
 interface GetStoreByIdParams {
-	id: number;
+	id: number; // Id of the store
 }
 
 interface FindClosestStoreToLocationParams {
-	lat: number;
-	lon: number;
+	lat: number; // Latitude value of the location
+	lon: number; // Longitude value of the location
 }
 
-interface CloseStoreByIdParams {
-	id: number;
-}
-
-interface OpenStoreByIdParams {
-	id: number;
+interface UpdateStoreByIdParams {
+	id: number; // Id of the store
+	data: Store; // Id of the store
 }
 
 @Injectable()
 export class StoresService {
+	// This service uses the StoresRepository to delegate any interactions with the database.
 	constructor(private repository: StoresRepository) {}
 
 	// ------------------------  GET STORES -----------------------------
@@ -51,6 +50,7 @@ export class StoresService {
 			...(onlyOpened && { is_open: true }), //if onlyOpened add requirement to filter by is_open = true
 		};
 
+		// Get data from repository
 		const stores = await this.repository.getStores({
 			skip: page * perPage,
 			take: perPage,
@@ -75,6 +75,7 @@ export class StoresService {
 			);
 		}
 
+		// Get data from repository
 		const stores = await this.repository.getStores({
 			where: {
 				id,
@@ -100,6 +101,7 @@ export class StoresService {
 			);
 		}
 
+		// Get data from repository
 		const store = await this.repository.findClosestStoreToLocation({
 			lat,
 			lon,
@@ -111,10 +113,11 @@ export class StoresService {
 	// -------------------- OPEN AND CLOSE STORE --------------------------
 
 	// The close and open store methods where separated to follow SRP in case further logic needs to be added (Eg: Sending an email notification or check permissions)
-	// But I understand the same functionality could be achieved with only one method.
+	// I understand the same functionality could be achieved with only one method.
+	// Additionally the parameter interface is reused.
 
 	// Closes the given store by id
-	async closeStoreById(params: CloseStoreByIdParams) {
+	async closeStoreById(params: GetStoreByIdParams) {
 		const { id } = params;
 
 		if (id == null || id <= 0) {
@@ -148,7 +151,7 @@ export class StoresService {
 	}
 
 	// Opens the given store by id
-	async openStoreById(params: OpenStoreByIdParams) {
+	async openStoreById(params: GetStoreByIdParams) {
 		const { id } = params;
 
 		if (id == null || id <= 0) {
